@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# desc: mini-session
+
+session="mini"
+
+if ! ( tmux ls | grep -q "$session: " ) ; then
+    tmux start-server
+
+    tmux new -d -s $session
+    tmux new-window -t $session:1
+    tmux select-window -t $session:0
+fi
+
+tmux attach -t $session
+

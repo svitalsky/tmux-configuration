@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# default named not pre-configured session
+
+session="$1"
+
+if ! ( tmux ls | grep -q "$session: " ) ; then
+    tmux start-server
+
+    tmux new -d -s $session
+    tmux new-window -t $session:1
+    tmux new-window -t $session:2
+    tmux new-window -t $session:3
+    tmux select-window -t $session:0
+fi
+
+tmux attach -t $session
+

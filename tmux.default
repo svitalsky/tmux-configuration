@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# default unnamed session
+
+tmux start-server
+
+tmux new \; \
+     neww \; \
+     neww \; \
+     neww \; \
+     selectw -t 0 \; \
+     attach
+
