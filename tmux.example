@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# desc: example pre-configured session
+
+# name the session here, e.g. 'my-mega-project'
+session=example
+
+MY_PROJ_DIR="$HOME/myprojects/my-project"
+
+cd "$MY_PROJ_DIR"
+if ! ( tmux ls | grep -q "$session: " ) ; then
+    tmux start-server
+
+    # open the session in the root of your project
+    tmux new -d -s $session -n my-project
+    # start lazygit in the second window
+    tmux new-window -n lazy -t $session:1 lazygit
+
+    # another window in the sources directory
+    cd ./sources
+    tmux new-window -n sources -t $session:2
+
+    # next go to the dev-server directory
+    cd ../dev-server
+    # run dev version of the server here
+    tmux new-window -n "dev server" -t $session:3 "echo 'java -jar my-app.jar'; sleep 3600"
+    # and perhaps 'tail -f myapp.log' here
+    tmux split-window -v
+
+    # start your work in the project root
+    tmux select-window -t $session:0
+fi
+
+tmux attach -t $session
+

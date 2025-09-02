@@ -1,0 +1,7 @@
+1. Put this directory as $HOME/bin/etc/tmux (or change relevant paths in scripts).
+2. Link or copy tm script into $HOME/bin.\
+3. Copy tmux.conf to $HOME/.tmux.conf (with a dot!).
+4. Optionally add this alias into $HOME/.bashrc
+        alias tml='tm -l'
+5. Run tmux with tm script, using either one of pre-configured sessions or
+   named default session or anonymous default session.
