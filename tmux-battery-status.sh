@@ -8,7 +8,7 @@ if [[ ! -d $CACHE_DIR ]]; then
     mkdir -p "$CACHE_DIR" || { echo "Bt: N/A" ; exit 1 ; }
 fi
 
-if [[ ! -f $CACHE ]] || (( $( stat -c %Y "$CACHE" ) + 10 < NOW )); then
+if [[ ! -f $CACHE ]] || (( $( stat -c %Y "$CACHE" ) + 5 < NOW )); then
     # BATT=$( acpi -b 2> /dev/null | cut -d, -f2 | tr -d ' ' || echo 'N/A' )
     BAT_PATH=/sys/class/power_supply/BAT0
     if [[ -d $BAT_PATH ]]; then
