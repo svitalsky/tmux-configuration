@@ -12,7 +12,10 @@ errorExit() {
 listOneSession() {
     ssFile="$( basename $1 )"
     ssId="${ssFile##*.}"
-    if [ "$ssId" != "default" ] && [ "$ssId" != "named" ] ; then
+    if [ "$ssId" != "default" ] && \
+        [ "$ssId" != "named" ] && \
+        grep -q "^session=" "$1" ;
+    then
         ssDesc="$( grep "desc:" $1 | sed "s,^ *# *desc *: *\\(.*\\)$,\\1," )"
         ssIdF="$( printf '%-8s' $ssId )"
         echo "$ssIdF : $ssDesc"
