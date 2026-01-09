@@ -1,7 +1,8 @@
 #!/bin/bash
 
 TMUX_DIR="$HOME/bin/etc/tmux"
-NAMED="$TMUX_DIR/tmux.named"
+SESSION_DIR="$TMUX_DIR/sessions"
+NAMED="$SESSION_DIR/tmux.named"
 
 errorExit() {
     echo "$1" >&2
@@ -24,19 +25,27 @@ listOneSession() {
 
 
 listSessions() {
-    echo "Running sessions:"
-    tmux ls
-    echo
     echo "Predefined session:"
-    for ss in "$TMUX_DIR"/tmux.* ; do
+    for ss in "$SESSION_DIR"/tmux.* ; do
         listOneSession $ss
     done
     exit 0
 }
 
 
-[ "$1" = "-l" ] && \
+listRunning() {
+    echo "Running sessions:"
+    tmux ls
+    echo
+    exit 0
+}
+
+
+[ "$1" = "-s" ] && \
     listSessions
+
+[ "$1" = "-l" ] && \
+    listRunning
 
 [ "$1" = "-" ] && \
     exec tmux ${@:2}
@@ -51,7 +60,7 @@ listSessions() {
 echo "$SESSION_ID" | grep -q "\\( \\|\\\\t\\)" && \
     errorExit "Session id must contain neither spaces nor tabs."
 
-SESS_CONF="$TMUX_DIR/tmux.$SESSION_ID"
+SESS_CONF="$SESSION_DIR/tmux.$SESSION_ID"
 [[ -f $SESS_CONF ]] && \
     exec /bin/bash "$SESS_CONF" || \
     exec /bin/bash ${NAMED} ${SESSION_ID}
