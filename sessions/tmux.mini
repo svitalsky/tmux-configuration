@@ -2,7 +2,8 @@
 
 # desc: mini-session
 
-session="mini"
+callname="$( basename $0 )"
+session="${callname##*.}"
 
 if ! ( tmux ls | grep -q "$session: " ) ; then
     tmux start-server

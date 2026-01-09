@@ -2,9 +2,11 @@
 
 # desc: example pre-configured session
 
-# name the session here, e.g. 'my-mega-project'
-session=example
+# name of the session is determined from the callname suffix
+callname="$( basename $0 )"
+session="${callname##*.}"
 
+# replace with real project root directory
 MY_PROJ_DIR="$HOME/myprojects/my-project"
 
 cd "$MY_PROJ_DIR"
@@ -25,7 +27,7 @@ if ! ( tmux ls | grep -q "$session: " ) ; then
     # run dev version of the server here
     tmux new-window -n "dev server" -t $session:3 "echo 'java -jar my-app.jar'; sleep 3600"
     # and perhaps 'tail -f myapp.log' here
-    tmux split-window -v
+    tmux split-window -v "echo 'tail -f myapp.log'; sleep 3600"
 
     # start your work in the project root
     tmux select-window -t $session:0
