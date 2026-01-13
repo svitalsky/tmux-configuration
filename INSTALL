@@ -2,7 +2,9 @@
 2. Link or copy tm script into $HOME/bin.\
 3. Copy tmux.conf to $HOME/.tmux.conf (with a dot!) and tm-completion.bash into
    the ~/.bash_completion.d/ directory (make sure it is referenced from ~/.bashrc).
-4. Optionally add this alias into $HOME/.bashrc
-        alias tml='tm -l'
+4. Optionally add these aliases into $HOME/.bashrc
+        alias tml='tm -l '
+        alias tms='tm -s '
+        alias tmd='tm -d '
 5. Run tmux with tm script, using either one of pre-configured sessions or
    named default session or anonymous default session.
