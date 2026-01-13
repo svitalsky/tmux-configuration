@@ -40,16 +40,27 @@ listRunning() {
     exit 0
 }
 
-
+# Special cases:
+# - list predefined sessions
 [ "$1" = "-s" ] && \
     listSessions
 
+# - list running sessions
 [ "$1" = "-l" ] && \
     listRunning
 
+# - dettach from current session
+if [ "$1" = "-d" ] ; then
+    [ -n "$TMUX" ] && \
+        exec tmux detach-client || \
+        exit 0
+fi
+
+# - call tmux directly with user params
 [ "$1" = "-" ] && \
     exec tmux ${@:2}
 
+# Standard cases: calling, creating sessions, attaching to sessions...
 [ "$1" != "" ] && \
     SESSION_ID="$1" || \
     SESSION_ID="default"
@@ -61,6 +72,18 @@ echo "$SESSION_ID" | grep -q "\\( \\|\\\\t\\)" && \
     errorExit "Session id must contain neither spaces nor tabs."
 
 SESS_CONF="$SESSION_DIR/tmux.$SESSION_ID"
-[[ -f $SESS_CONF ]] && \
-    exec /bin/bash "$SESS_CONF" || \
-    exec /bin/bash ${NAMED} ${SESSION_ID}
+if [ -n "$TMUX" ]; then
+    TM_CURR_SESS="$( tmux display-message -p '#S' )"
+    if [ "$SESSION_ID" != "default" ]; then
+        [ "$TM_CURR_SESS" = "$SESSION_ID" ] && exit 0
+        tmux run-shell \
+            " ( [[ -f $SESS_CONF ]] && /bin/bash ${SESS_CONF} || /bin/bash ${NAMED} ${SESSION_ID} ) || true "
+        tmux switch-client -t $SESSION_ID
+        exit 0
+    fi
+    errorExit "Only named sessions may be called from within another tmux session."
+else
+    [[ -f $SESS_CONF ]] && \
+        exec /bin/bash "$SESS_CONF" || \
+        exec /bin/bash ${NAMED} ${SESSION_ID}
+fi
