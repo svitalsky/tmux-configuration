@@ -77,13 +77,16 @@ if [ -n "$TMUX" ]; then
     if [ "$SESSION_ID" != "default" ]; then
         [ "$TM_CURR_SESS" = "$SESSION_ID" ] && exit 0
         tmux run-shell \
-            " ( [[ -f $SESS_CONF ]] && /bin/bash ${SESS_CONF} || /bin/bash ${NAMED} ${SESSION_ID} ) || true "
+            "( [[ -f $SESS_CONF ]] && /bin/bash ${SESS_CONF} || /bin/bash ${NAMED} ${SESSION_ID} ) || true"
         tmux switch-client -t $SESSION_ID
-        exit 0
+    else
+        tmux run-shell "/bin/bash $SESS_CONF || true"
+        tmux switch-client -t $( tmux show-environment -g LAST_ANON_SESS | cut -d= -f2 )
     fi
-    errorExit "Only named sessions may be called from within another tmux session."
 else
     [[ -f $SESS_CONF ]] && \
         exec /bin/bash "$SESS_CONF" || \
         exec /bin/bash ${NAMED} ${SESSION_ID}
 fi
+
+exit 0

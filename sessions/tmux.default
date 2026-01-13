@@ -4,10 +4,13 @@
 
 tmux start-server
 
-tmux new \; \
-     neww \; \
-     neww \; \
-     neww \; \
-     selectw -t 0 \; \
-     attach
+sess=$( tmux new-session -d -P -F '#S' )
 
+tmux \
+     neww -t $sess:1 \; \
+     neww -t $sess:2 \; \
+     neww -t $sess:3 \; \
+     selectw -t $sess:0 \; \
+     attach -t $sess
+
+tmux set-environment -g LAST_ANON_SESS $sess
