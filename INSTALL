@@ -1,8 +1,9 @@
-1. Put this directory as $HOME/bin/etc/tmux (or change relevant paths in scripts).
-2. Link or copy tm script into $HOME/bin.\
+1. Clone this into $HOME/bin/etc/tmux (or change relevant paths in scripts).
+2. Link or copy tm script into $HOME/bin/
 3. Copy tmux.conf to $HOME/.tmux.conf (with a dot!) and tm-completion.bash into
    the ~/.bash_completion.d/ directory (make sure it is referenced from ~/.bashrc).
-4. Optionally add these aliases into $HOME/.bashrc
+4. Optionally add these aliases into $HOME/.bashrc (for listing running sessions,
+   available session configs and dettaching from current session respectively):
         alias tml='tm -l '
         alias tms='tm -s '
         alias tmd='tm -d '
