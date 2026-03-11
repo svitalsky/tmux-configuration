@@ -28,6 +28,7 @@ if [[ ! -f $CACHE ]] || (( $( stat -c %Y "$CACHE" ) + 5 < NOW )); then
                 ;;
         esac
 
+        REVERSE=""
         if   (( CAPACITY > 70 )); then
             COLOR="lightgreen"
         elif (( CAPACITY > 49 )); then
@@ -37,10 +38,11 @@ if [[ ! -f $CACHE ]] || (( $( stat -c %Y "$CACHE" ) + 5 < NOW )); then
         elif (( CAPACITY > 19 )); then
             COLOR="orange"
         else
+            [ "$ST" != "+" ] && REVERSE=",reverse"
             COLOR="colour9"
         fi
 
-        BATT="#[fg=$COLOR]${CAPACITY}% ($ST)#[default]"
+        BATT="#[fg=$COLOR$REVERSE]${CAPACITY}% ($ST)#[default]"
     else
         BATT="N/A"
     fi
