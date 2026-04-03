@@ -2,7 +2,13 @@
 
 # default named not pre-configured session
 
+set -euo pipefail
 session="$1"
+
+lockdir="${XDG_RUNTIME_DIR:-/tmp}"
+lockfile="$lockdir/tmux-session-named.lock"
+exec 200>"$lockfile"
+flock -n 200
 
 if ! tmux has-session -t "$session" 2>/dev/null ; then
     tmux start-server
@@ -13,6 +19,9 @@ if ! tmux has-session -t "$session" 2>/dev/null ; then
     tmux new-window -t $session:3
     tmux select-window -t $session:0
 fi
+
+flock -u 200
+exec 200>&-
 
 tmux attach -t $session
 

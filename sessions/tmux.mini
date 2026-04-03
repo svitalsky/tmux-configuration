@@ -2,8 +2,14 @@
 
 # desc: mini-session
 
-callname="$( basename $0 )"
+set -euo pipefail
+callname="$( basename -- $0 )"
 session="${callname##*.}"
+
+lockdir="${XDG_RUNTIME_DIR:-/tmp}"
+lockfile="$lockdir/tmux-session-${session}.lock"
+exec 200>"$lockfile"
+flock -n 200
 
 if ! tmux has-session -t "$session" 2>/dev/null ; then
     tmux start-server
@@ -12,6 +18,9 @@ if ! tmux has-session -t "$session" 2>/dev/null ; then
     tmux new-window -t $session:1
     tmux select-window -t $session:0
 fi
+
+flock -u 200
+exec 200>&-
 
 tmux attach -t $session
 

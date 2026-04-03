@@ -2,9 +2,17 @@
 
 # desc: example pre-configured session
 
+set -euo pipefail
+
 # name of the session is determined from the callname suffix
-callname="$( basename $0 )"
+callname="$( basename -- $0 )"
 session="${callname##*.}"
+
+# setup lock to avoid race condition
+lockdir="${XDG_RUNTIME_DIR:-/tmp}"
+lockfile="$lockdir/tmux-session-${session}.lock"
+exec 200>"$lockfile"
+flock -n 200
 
 # replace with real project root directory
 MY_PROJ_DIR="$HOME/myprojects/my-project"
@@ -32,6 +40,10 @@ if ! tmux has-session -t "$session" 2>/dev/null ; then
     # start your work in the project root
     tmux select-window -t $session:0
 fi
+
+# release lock before attaching the session
+flock -u 200
+exec 200>&-
 
 tmux attach -t $session
 
