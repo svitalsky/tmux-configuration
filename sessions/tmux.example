@@ -10,7 +10,7 @@ session="${callname##*.}"
 MY_PROJ_DIR="$HOME/myprojects/my-project"
 
 cd "$MY_PROJ_DIR"
-if ! ( tmux ls | grep -q "$session: " ) ; then
+if ! tmux has-session -t "$session" 2>/dev/null ; then
     tmux start-server
 
     # open the session in the root of your project

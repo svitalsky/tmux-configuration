@@ -5,7 +5,7 @@
 callname="$( basename $0 )"
 session="${callname##*.}"
 
-if ! ( tmux ls | grep -q "$session: " ) ; then
+if ! tmux has-session -t "$session" 2>/dev/null ; then
     tmux start-server
 
     tmux new -d -s $session
