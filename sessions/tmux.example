@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# desc: example pre-configured session
+# desc: example pre-configured session, just to show some possibilities
 
 set -euo pipefail
 
@@ -21,8 +21,15 @@ cd "$MY_PROJ_DIR"
 if ! tmux has-session -t "$session" 2>/dev/null ; then
     tmux start-server
 
-    # open the session in the root of your project
-    tmux new -d -s $session -n my-project
+    # open the session in the root of your project with a split window
+    # displaying git graph in the upper part and prompt in the lower one
+    # NOTE: we have the following alias lgu in gitconfig (replace with whatever you like):
+    # [alias]
+    #     lgu = "!f() { num=15; if [ \"$1\" != \"\" ] && ( echo \"$1\" | grep -q \"^[0-9]\\\\+\\$\" ) ; then num=\"$1\" ; shift ; fi ; [ $num -eq 0 ] && num=999999999 ; git \"$@\" log -n \"$num\" --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n'' %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all; }; f"
+    tmux new -d -s $session -n my-project "sleep 1 ; watch -t -c 'git lgu --no-pager -c color.ui=always'"
+    tmux split-window -v
+    tmux resize-pane -D 7
+
     # start lazygit in the second window
     tmux new-window -n lazy -t $session:1 lazygit
 
